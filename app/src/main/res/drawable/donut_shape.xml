@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Внешний круг с градиентом -->
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="#20FFFFFF"
+                android:endColor="#4A3780" /> <!-- темнее снизу -->
+        </shape>
+    </item>
+
+    <!-- Внутренний круг (прозрачный, создаёт "дырку") -->
+    <item
+        android:left="35dp"
+        android:top="35dp"
+        android:right="35dp"
+        android:bottom="35dp">
+        <shape android:shape="oval">
+            <solid android:color="#4A3780" />
+        </shape>
+    </item>
+
+</layer-list>
