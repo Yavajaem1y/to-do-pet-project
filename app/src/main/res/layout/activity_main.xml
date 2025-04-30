@@ -68,19 +68,27 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
     </androidx.recyclerview.widget.RecyclerView>
-    <TextView
+    <ImageView
         android:id="@+id/b_add_new_task"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_button_plus"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_button"
-        android:text="Add New Task"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:fontFamily="@font/inter_bold"
-        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_plus"
+        android:padding="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_item"
+        android:layout_toLeftOf="@id/b_add_new_task"/>
 </RelativeLayout>
