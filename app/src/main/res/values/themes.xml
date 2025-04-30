@@ -1,8 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Todopetproject" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Цвет верхней панели (status bar) -->
+        <item name="android:statusBarColor">#FF4A3780</item>
+
+        <!-- Цвет нижней панели (navigation bar) -->
+        <item name="android:navigationBarColor">#FFF1F5F9</item>
+
+        <!-- Для светлого текста в статус-баре (если нужен) -->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+        <!-- Для светлого текста в навигационной панели (если нужен) -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
+        <!-- Другие атрибуты темы -->
     </style>
 
     <style name="Theme.Todopetproject" parent="Base.Theme.Todopetproject" />

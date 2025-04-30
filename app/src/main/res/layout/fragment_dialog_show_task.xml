@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".presentation.ShowTaskDialogFragment">
+    tools:context=".presentation.fragments.ShowTaskDialogFragment">
 
     <ImageView
         android:id="@+id/iv_delete_task"
@@ -48,16 +48,113 @@
         android:layout_height="wrap_content"
         android:minHeight="150dp"
         android:layout_below="@id/rl_top_element"
-        android:padding="16dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingBottom="16dp"
         android:background="#f1f5f9">
+        <LinearLayout
+            android:id="@+id/ll_pick_date"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp">
+                <TextView
+                    android:id="@+id/tv_text_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textColor="@color/black"/>
+                <RelativeLayout
+                    android:id="@+id/b_pick_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_text_date"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:padding="18dp">
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textColor="#901B1B1D"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/inter_regular"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_date"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp">
+                <TextView
+                    android:id="@+id/tv_text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:textColor="@color/black"/>
+                <RelativeLayout
+                    android:id="@+id/b_pick_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_text_time"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:padding="18dp">
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textColor="#901B1B1D"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/inter_regular"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_time"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_text_task_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semi_bold"
+            android:text="Notes"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_below="@id/ll_pick_date"
+            android:layout_marginTop="40dp"/>
         <TextView
             android:id="@+id/tv_task_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task notes"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="#1B1B1D"
-            android:fontFamily="@font/inter_regular"/>
+            android:fontFamily="@font/inter_regular"
+            android:layout_below="@id/tv_text_task_notes"
+            android:layout_marginTop="8dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

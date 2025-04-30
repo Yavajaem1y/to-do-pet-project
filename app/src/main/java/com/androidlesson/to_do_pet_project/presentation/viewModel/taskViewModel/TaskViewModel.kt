@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidlesson.domain.models.TaskModel
 import com.androidlesson.domain.usecase.AddTaskUseCase
+import com.androidlesson.domain.usecase.DeleteTaskUseCase
 import com.androidlesson.domain.usecase.GetTasksUseCase
 import com.androidlesson.domain.usecase.IsCompletedUseCase
 import kotlinx.coroutines.launch
 
-class TaskViewModel(private val addTaskUseCase: AddTaskUseCase, private val getTasksUseCase: GetTasksUseCase, private val isCompletedUseCase: IsCompletedUseCase) : ViewModel() {
+class TaskViewModel(private val addTaskUseCase: AddTaskUseCase, private val getTasksUseCase: GetTasksUseCase, private val isCompletedUseCase: IsCompletedUseCase, private val deleteTaskUseCase: DeleteTaskUseCase) : ViewModel() {
 
     private val taskListMutableLiveData: MutableLiveData<List<TaskModel>> = MutableLiveData()
 
@@ -32,6 +33,10 @@ class TaskViewModel(private val addTaskUseCase: AddTaskUseCase, private val getT
 
     suspend fun addTask(taskModel: TaskModel){
         addTaskUseCase.execute(taskModel)
+    }
+
+    suspend fun deleteTask(taskModel: TaskModel){
+        deleteTaskUseCase.execute(taskModel)
     }
 
     fun getTaskListLiveData(): LiveData<List<TaskModel>>{

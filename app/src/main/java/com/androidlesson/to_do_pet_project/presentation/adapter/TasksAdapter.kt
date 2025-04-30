@@ -1,7 +1,7 @@
 package com.androidlesson.to_do_pet_project.presentation.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +12,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidlesson.domain.models.TaskModel
 import com.androidlesson.to_do_pet_project.R
-import com.androidlesson.to_do_pet_project.presentation.ShowTaskDialogFragment
 import com.androidlesson.to_do_pet_project.presentation.callback.OnTaskCheckListener
+import com.androidlesson.to_do_pet_project.presentation.fragments.ShowTaskDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
 
 class TasksAdapter(
     private val onTaskCheckListener: OnTaskCheckListener,
@@ -111,9 +112,33 @@ class TasksAdapter(
 
             checkbox.setOnCheckedChangeListener(null)
             checkbox.isChecked = isDone
+            if (isDone) {
+                title.paintFlags = title.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                time.paintFlags = time.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                title.paintFlags = title.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                time.paintFlags = time.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
             checkbox.setOnCheckedChangeListener { _, isChecked ->
                 coroutineScope.launch {
                     onTaskCheckListener.onTaskCheck(task, isChecked)
+                }
+            }
+
+            when (task.category){
+                "first" -> {
+                    image.setBackgroundResource(R.drawable.bg_blue_circle)
+                    image.setImageResource(R.drawable.ic_first_category)
+                }
+
+                "second" -> {
+                    image.setBackgroundResource(R.drawable.bg_violet_circle)
+                    image.setImageResource(R.drawable.ic_second_category)
+                }
+
+                "third" -> {
+                    image.setBackgroundResource(R.drawable.bg_yellow_circle)
+                    image.setImageResource(R.drawable.ic_third_category)
                 }
             }
         }

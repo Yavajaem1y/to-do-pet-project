@@ -16,7 +16,8 @@
     <ImageView
         android:id="@+id/iv_task_image"
         android:layout_width="48dp"
-        android:layout_height="48dp" />
+        android:layout_height="48dp"
+        android:padding="16dp"/>
     
     <TextView
         android:id="@+id/tv_task_title"

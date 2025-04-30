@@ -17,6 +17,11 @@ import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.
 import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.TaskViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var rv_tasks_holder: RecyclerView
     private lateinit var b_add_new_task: TextView
+    private lateinit var tv_date: TextView
 
     private lateinit var adapter:TasksAdapter;
 
@@ -48,11 +54,9 @@ class MainActivity : AppCompatActivity() {
     private fun initialization() {
         rv_tasks_holder = findViewById(R.id.rv_tasks_holder)
         b_add_new_task = findViewById(R.id.b_add_new_task)
+        tv_date = findViewById(R.id.tv_date)
 
-        var list=ArrayList<TaskModel>()
-        list.add(TaskModel(0, "Task 1", "eq", "11.02.2025", "11:00", "Davay davay", false))
-        list.add(TaskModel(0, "Task 2", "eq", "14.03.2025", "14:00", "Davay davay", false))
-        list.add(TaskModel(0, "Task 2", "eq", "02.04.2025", "11:41", "Davay davay", false))
+        tv_date.text=getCurrentDateFormatted()
 
         adapter = TasksAdapter(object : OnTaskCheckListener {
             override suspend fun onTaskCheck(task: TaskModel, isChecked: Boolean) {
@@ -62,7 +66,12 @@ class MainActivity : AppCompatActivity() {
         rv_tasks_holder.layoutManager = LinearLayoutManager(this)
         rv_tasks_holder.adapter = adapter
         rv_tasks_holder.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        adapter.updateTasksList(list)
+        adapter.updateTasksList(ArrayList<TaskModel>())
+    }
+
+    fun getCurrentDateFormatted(): String {
+        val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
+        return formatter.format(Date())
     }
 
     private fun observer() {
