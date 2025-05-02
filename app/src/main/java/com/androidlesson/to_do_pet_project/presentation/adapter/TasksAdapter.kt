@@ -2,6 +2,7 @@ package com.androidlesson.to_do_pet_project.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 class TasksAdapter(
     private val onTaskCheckListener: OnTaskCheckListener,
     private val coroutineScope: CoroutineScope,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    var currentDate: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     sealed class TaskListItem {
@@ -77,8 +79,8 @@ class TasksAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun updateTasksList(tasks: List<TaskModel>) {
         val sorted = tasks.sortedBy { it.isDone }
-        val activeTasks = sorted.filter { !it.isDone }
-        val completedTasks = sorted.filter { it.isDone }
+        val activeTasks = sorted.filter { !it.isDone && it.date.equals(currentDate)}
+        val completedTasks = sorted.filter { it.isDone && it.date.equals(currentDate)}
 
         items = when {
             activeTasks.isNotEmpty() && completedTasks.isNotEmpty() -> {
@@ -93,7 +95,6 @@ class TasksAdapter(
 
         notifyDataSetChanged()
     }
-
 
     class TaskViewHolder(
         view: View,

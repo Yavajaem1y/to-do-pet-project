@@ -21,11 +21,12 @@ class AppModule(private val application: Application) {
 
     @Provides
     fun provideTaskViewModelFactory(
+        application: Application,
         addTaskUseCase: AddTaskUseCase,
         getTasksUseCase: GetTasksUseCase,
         isCompletedUseCase: IsCompletedUseCase,
         deleteTaskUseCase: DeleteTaskUseCase
     ): TaskViewModelFactory {
-        return TaskViewModelFactory(addTaskUseCase, getTasksUseCase,isCompletedUseCase,deleteTaskUseCase)
+        return TaskViewModelFactory(application,addTaskUseCase, getTasksUseCase,isCompletedUseCase,deleteTaskUseCase)
     }
 }

@@ -1,5 +1,8 @@
 package com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel
 
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,12 +14,19 @@ import com.androidlesson.domain.usecase.GetTasksUseCase
 import com.androidlesson.domain.usecase.IsCompletedUseCase
 import kotlinx.coroutines.launch
 
-class TaskViewModel(private val addTaskUseCase: AddTaskUseCase, private val getTasksUseCase: GetTasksUseCase, private val isCompletedUseCase: IsCompletedUseCase, private val deleteTaskUseCase: DeleteTaskUseCase) : ViewModel() {
-
-    private val taskListMutableLiveData: MutableLiveData<List<TaskModel>> = MutableLiveData()
+class TaskViewModel(
+    application: Application,
+    private val addTaskUseCase: AddTaskUseCase,
+    private val getTasksUseCase: GetTasksUseCase,
+    private val isCompletedUseCase: IsCompletedUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase
+) : AndroidViewModel(application) {
+    private val taskListMutableLiveData: MutableLiveData<List<TaskModel>> = MutableLiveData(ArrayList())
+    private val currentDateMutableLiveData: MutableLiveData<String> = MutableLiveData("")
 
     init {
         observeTasks()
+        Log.d("task","vm created")
     }
 
     private fun observeTasks() {
@@ -39,7 +49,15 @@ class TaskViewModel(private val addTaskUseCase: AddTaskUseCase, private val getT
         deleteTaskUseCase.execute(taskModel)
     }
 
+    fun setCurrentDate(date : String){
+        currentDateMutableLiveData.postValue(date)
+    }
+
     fun getTaskListLiveData(): LiveData<List<TaskModel>>{
         return taskListMutableLiveData
+    }
+
+    fun getCurrentDateLiveData(): LiveData<String>{
+        return currentDateMutableLiveData
     }
 }

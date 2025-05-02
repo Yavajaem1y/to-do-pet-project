@@ -47,12 +47,21 @@
         android:fontFamily="@font/inter_bold"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="96dp"/>
+    <ImageView
+        android:id="@+id/b_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/bg_white_circle"
+        android:src="@drawable/ic_left_arrow_white"
+        android:padding="10dp"/>
     <TextView
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
         android:text="October 20, 2022"
         android:textSize="16sp"
         android:textColor="@color/white"

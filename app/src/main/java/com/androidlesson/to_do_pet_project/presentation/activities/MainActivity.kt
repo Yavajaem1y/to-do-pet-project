@@ -2,9 +2,11 @@ package com.androidlesson.to_do_pet_project.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -20,9 +22,12 @@ import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TreeSet
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -34,9 +39,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rv_tasks_holder: RecyclerView
     private lateinit var rv_calendar: RecyclerView
     private lateinit var b_add_new_task: ImageView
+    private lateinit var b_back: ImageView
     private lateinit var tv_date: TextView
 
-    private lateinit var adapter:TasksAdapter;
+    private lateinit var tasksAdapter:TasksAdapter;
     private lateinit var calendarAdapter: CalendarAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,18 +66,19 @@ class MainActivity : AppCompatActivity() {
         rv_calendar = findViewById(R.id.rv_calendar)
         b_add_new_task = findViewById(R.id.b_add_new_task)
         tv_date = findViewById(R.id.tv_date)
+        b_back = findViewById(R.id.b_back)
 
-        tv_date.text=getCurrentDateFormatted()
+        if (vm.getCurrentDateLiveData().value.toString().isEmpty()) vm.setCurrentDate(getCurrentDateFormatted())
 
-        adapter = TasksAdapter(object : OnTaskCheckListener {
+        tasksAdapter = TasksAdapter(object : OnTaskCheckListener {
             override suspend fun onTaskCheck(task: TaskModel, isChecked: Boolean) {
                 vm.isCompleted(task, isChecked);
             }
-        }, CoroutineScope(Dispatchers.IO), supportFragmentManager)
+        }, CoroutineScope(Dispatchers.IO), supportFragmentManager, vm.getCurrentDateLiveData().value.toString())
         rv_tasks_holder.layoutManager = LinearLayoutManager(this)
-        rv_tasks_holder.adapter = adapter
+        rv_tasks_holder.adapter = tasksAdapter
         rv_tasks_holder.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        adapter.updateTasksList(ArrayList<TaskModel>())
+        tasksAdapter.updateTasksList(ArrayList<TaskModel>())
     }
 
     private fun setupCalendar() {
@@ -88,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
         }
 
-        calendarAdapter = CalendarAdapter(dates, todayIndex) { selectedDate ->
+        calendarAdapter = CalendarAdapter(dates, todayIndex, TreeSet()) { selectedDate ->
             updateSelectedDate(selectedDate)
         }
 
@@ -121,27 +128,73 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateSelectedDate(date: Date) {
         val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
-        tv_date.text = formatter.format(date)
+        vm.setCurrentDate(formatter.format(date))
     }
 
-    fun getCurrentDateFormatted(): String {
+    private fun getCurrentDateFormatted(): String {
         val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
         return formatter.format(Date())
+    }
+
+    private fun getDateToAdapter(date :String): String{
+        val inputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
+        val date = LocalDate.parse(date, inputFormatter)
+
+        val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        return date.format(outputFormatter)
     }
 
     private fun observer() {
         vm.getTaskListLiveData().observe(this){
             taskList->updateAdapter(taskList)
         }
+
+        vm.getCurrentDateLiveData().observe(this) { s ->
+            if (s.isNotEmpty()){
+                if (s.equals(getCurrentDateFormatted())){
+                    b_back.visibility= View.INVISIBLE
+                }
+                else {
+                    b_back.visibility=View.VISIBLE
+                }
+                tv_date.text = s
+                tasksAdapter.currentDate = getDateToAdapter(s)
+                vm.getTaskListLiveData().value?.let { tasksAdapter.updateTasksList(it) }
+            }
+        }
     }
 
     private fun updateAdapter(tasks: List<TaskModel>){
-        adapter.updateTasksList(tasks)
+        tasksAdapter.updateTasksList(tasks)
+        var setDates:TreeSet<String> = TreeSet()
+
+        setDates.addAll(tasks.map {it.date})
+        calendarAdapter.setDates=setDates
+
     }
 
     private fun setOnClickListener() {
         b_add_new_task.setOnClickListener{
             startActivity(Intent(this,AddTaskActivity::class.java))
+        }
+
+        b_back.setOnClickListener {
+            val currentDate = Date()
+            vm.setCurrentDate(getCurrentDateFormatted())
+
+            calendarAdapter.selectDate(currentDate)
+
+            val todayIndex = calendarAdapter.dates.indexOfFirst {
+                val cal1 = Calendar.getInstance().apply { time = it }
+                val cal2 = Calendar.getInstance()
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                        cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                        cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
+            }
+
+            if (todayIndex != -1) {
+                rv_calendar.scrollToPosition(todayIndex)
+            }
         }
     }
 }
