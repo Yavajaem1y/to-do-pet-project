@@ -1,5 +1,6 @@
 package com.androidlesson.to_do_pet_project.presentation.fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.androidlesson.domain.models.TaskModel
 import com.androidlesson.to_do_pet_project.R
 import com.androidlesson.to_do_pet_project.app.App
-import com.androidlesson.to_do_pet_project.presentation.viewModel.showTaskDialogFragment.ShowTaskDialogFragmentViewModel
+import com.androidlesson.to_do_pet_project.presentation.activities.EditTaskActivity
+import com.androidlesson.to_do_pet_project.presentation.viewModel.showTaskDialogFragmentViewModel.ShowTaskDialogFragmentViewModel
+import com.androidlesson.to_do_pet_project.presentation.viewModel.showTaskDialogFragmentViewModel.ShowTaskDialogFragmentViewModelFactory
 import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.TaskViewModel
 import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.TaskViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +28,7 @@ import javax.inject.Inject
 class ShowTaskDialogFragment : DialogFragment() {
 
     private lateinit var iv_delete_task: ImageView
+    private lateinit var iv_edit_task: ImageView
     private lateinit var titleTextView: TextView
     private lateinit var descriptionTextView: TextView
     private lateinit var tv_date: TextView
@@ -35,6 +39,8 @@ class ShowTaskDialogFragment : DialogFragment() {
     lateinit var vmFactory: TaskViewModelFactory
 
     private lateinit var fragmentVM: ShowTaskDialogFragmentViewModel
+    @Inject
+    lateinit var fragmentVMFactory: ShowTaskDialogFragmentViewModelFactory
 
     companion object {
         private const val ARG_TASK = "arg_task"
@@ -80,8 +86,8 @@ class ShowTaskDialogFragment : DialogFragment() {
         (requireActivity().application as App).appComponent?.injectShowTaskDialogFragment(this)
 
         // ViewModel
-        vm = ViewModelProvider(this, vmFactory).get(TaskViewModel::class.java)
-        fragmentVM=ViewModelProvider(this).get(ShowTaskDialogFragmentViewModel::class.java)
+        vm = ViewModelProvider(requireActivity(), vmFactory).get(TaskViewModel::class.java)
+        fragmentVM=ViewModelProvider(requireActivity(),fragmentVMFactory).get(ShowTaskDialogFragmentViewModel::class.java)
 
         fragmentVM.taskModel=task
 
@@ -96,6 +102,7 @@ class ShowTaskDialogFragment : DialogFragment() {
         descriptionTextView = view.findViewById(R.id.tv_task_notes)
         tv_date=view.findViewById(R.id.tv_date)
         tv_time=view.findViewById(R.id.tv_time)
+        iv_edit_task=view.findViewById(R.id.iv_edit_task)
 
         titleTextView.text = fragmentVM.taskModel.taskTitle
         descriptionTextView.text = fragmentVM.taskModel.notes
@@ -106,6 +113,13 @@ class ShowTaskDialogFragment : DialogFragment() {
     private fun setOnClickListener(){
         iv_delete_task.setOnClickListener{
             CoroutineScope(Dispatchers.IO).launch { vm.deleteTask(fragmentVM.taskModel) }
+            dismiss()
+        }
+
+        iv_edit_task.setOnClickListener {
+            val intent = Intent(requireActivity(), EditTaskActivity::class.java)
+            intent.putExtra("task", fragmentVM.taskModel)
+            startActivity(intent)
             dismiss()
         }
     }

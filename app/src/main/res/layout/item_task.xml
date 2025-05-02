@@ -29,7 +29,9 @@
         android:textSize="16sp"
         android:textColor="@color/black"
         android:fontFamily="@font/inter_semi_bold"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_toLeftOf="@id/checkbox_done"
+        android:layout_marginEnd="8dp"/>
 
     <TextView
         android:id="@+id/tv_time"

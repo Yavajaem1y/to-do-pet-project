@@ -17,6 +17,9 @@
             android:name=".presentation.activities.AddTaskActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.activities.EditTaskActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.activities.MainActivity"
             android:exported="true">
             <intent-filter>

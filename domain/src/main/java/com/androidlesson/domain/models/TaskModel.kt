@@ -4,10 +4,10 @@ import java.io.Serializable
 
 data class TaskModel(
     val id: Int=0,
-    val taskTitle: String,
-    val category: String,
-    val date: String,
-    val time: String,
+    var taskTitle: String,
+    var category: String,
+    var date: String,
+    var time: String,
     val notes: String,
     var isDone: Boolean
 ) : Serializable

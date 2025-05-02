@@ -1,8 +1,11 @@
 package com.androidlesson.to_do_pet_project.presentation.activities
 
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsetsController
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -55,10 +58,36 @@ class MainActivity : AppCompatActivity() {
         vm = ViewModelProvider(this, vmFactory).get(TaskViewModel::class.java)
 
         // UI
+        setBackGround()
         initialization()
         setupCalendar()
         observer()
         setOnClickListener()
+    }
+
+    private fun setBackGround(){
+        val statusBarColor = Color.parseColor("#FF4A3780")
+        val navBarColor = Color.parseColor("#FFF1F5F9")
+
+        window.statusBarColor = statusBarColor
+        window.navigationBarColor = navBarColor
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val controller = window.insetsController
+            controller?.setSystemBarsAppearance(
+                0,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+            controller?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    )
+        }
     }
 
     private fun initialization() {

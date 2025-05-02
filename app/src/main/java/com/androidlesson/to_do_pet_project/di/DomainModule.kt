@@ -3,6 +3,7 @@ package com.androidlesson.to_do_pet_project.di
 import com.androidlesson.domain.repository.TasksRepository
 import com.androidlesson.domain.usecase.AddTaskUseCase
 import com.androidlesson.domain.usecase.DeleteTaskUseCase
+import com.androidlesson.domain.usecase.EditTaskUseCase
 import com.androidlesson.domain.usecase.GetTasksUseCase
 import com.androidlesson.domain.usecase.IsCompletedUseCase
 import dagger.Module
@@ -29,5 +30,10 @@ class DomainModule {
     @Provides
     fun provideDeleteTaskUseCase(tasksRepository: TasksRepository): DeleteTaskUseCase {
         return DeleteTaskUseCase(tasksRepository)
+    }
+
+    @Provides
+    fun provideEditTaskUseCase(tasksRepository: TasksRepository): EditTaskUseCase {
+        return EditTaskUseCase(tasksRepository)
     }
 }

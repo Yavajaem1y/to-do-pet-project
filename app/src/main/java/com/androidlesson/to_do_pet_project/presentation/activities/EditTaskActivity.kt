@@ -12,12 +12,12 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.androidlesson.domain.models.TaskModel
 import com.androidlesson.to_do_pet_project.R
 import com.androidlesson.to_do_pet_project.app.App
 import com.androidlesson.to_do_pet_project.presentation.viewModel.addTaskActivityViewModel.AddTaskActivityViewModel
+import com.androidlesson.to_do_pet_project.presentation.viewModel.editTaskActivityViewModel.EditTaskActivityViewModel
 import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.TaskViewModel
 import com.androidlesson.to_do_pet_project.presentation.viewModel.taskViewModel.TaskViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -28,13 +28,12 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-class AddTaskActivity : AppCompatActivity() {
-
+class EditTaskActivity : AppCompatActivity() {
     private lateinit var vm: TaskViewModel
     @Inject
     lateinit var vmFactory: TaskViewModelFactory
 
-    private lateinit var activityVM: AddTaskActivityViewModel
+    private lateinit var activityVM: EditTaskActivityViewModel
 
     private lateinit var et_task_title:EditText
     private lateinit var et_task_notes:EditText
@@ -52,19 +51,45 @@ class AddTaskActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
+        setContentView(R.layout.activity_edit_task)
 
-        (application as App).appComponent?.injectAddTaskActivity(this)
+        (application as App).appComponent?.injectEditTaskActivity(this)
 
         // ViewModel
         vm = ViewModelProvider(this, vmFactory).get(TaskViewModel::class.java)
-        activityVM = ViewModelProvider(this).get(AddTaskActivityViewModel::class.java)
+        activityVM = ViewModelProvider(this).get(EditTaskActivityViewModel::class.java)
 
         // UI
         setBackGround()
         initialization()
         setOnClickListener()
         observable()
+    }
+
+    private fun initialization() {
+        val task = intent.getSerializableExtra("task") as? TaskModel
+
+        if (task != null) {
+            activityVM.taskModel = task
+        }
+
+        et_task_notes=findViewById(R.id.et_task_notes)
+        et_task_title=findViewById(R.id.et_task_title)
+        b_pick_date=findViewById(R.id.b_pick_date)
+        b_pick_time=findViewById(R.id.b_pick_time)
+        b_add_new_task=findViewById(R.id.b_add_new_task)
+        tv_time=findViewById(R.id.tv_time)
+        tv_date=findViewById(R.id.tv_date)
+        iv_pick_category_third=findViewById(R.id.iv_pick_category_third)
+        iv_pick_category_second=findViewById(R.id.iv_pick_category_second)
+        iv_pick_category_first=findViewById(R.id.iv_pick_category_first)
+        iv_back=findViewById(R.id.iv_back)
+
+        et_task_title.setText(activityVM.taskModel.taskTitle)
+        et_task_notes.setText(activityVM.taskModel.notes)
+        tv_date.text = activityVM.taskModel.date
+        tv_time.text = activityVM.taskModel.time
+        activityVM.pickCategory(activityVM.taskModel.category)
     }
 
     private fun setBackGround(){
@@ -92,19 +117,6 @@ class AddTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun initialization() {
-        et_task_notes=findViewById(R.id.et_task_notes)
-        et_task_title=findViewById(R.id.et_task_title)
-        b_pick_date=findViewById(R.id.b_pick_date)
-        b_pick_time=findViewById(R.id.b_pick_time)
-        b_add_new_task=findViewById(R.id.b_add_new_task)
-        tv_time=findViewById(R.id.tv_time)
-        tv_date=findViewById(R.id.tv_date)
-        iv_pick_category_third=findViewById(R.id.iv_pick_category_third)
-        iv_pick_category_second=findViewById(R.id.iv_pick_category_second)
-        iv_pick_category_first=findViewById(R.id.iv_pick_category_first)
-        iv_back=findViewById(R.id.iv_back)
-    }
 
     private fun setOnClickListener() {
         b_pick_date.setOnClickListener {
@@ -118,7 +130,7 @@ class AddTaskActivity : AppCompatActivity() {
                 calendar.set(Calendar.DAY_OF_MONTH, d)
                 val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                 tv_date.text = dateFormat.format(calendar.time)
-                activityVM.date=dateFormat.format(calendar.time)
+                activityVM.taskModel.date=dateFormat.format(calendar.time)
             }, year, month, day).show()
         }
 
@@ -132,7 +144,7 @@ class AddTaskActivity : AppCompatActivity() {
 
                 val timeString = String.format("%02d:%02d", h, m)
                 tv_time.text = timeString
-                activityVM.time=timeString
+                activityVM.taskModel.time=timeString
             }, hour, minute, true).show()
         }
 
@@ -155,13 +167,13 @@ class AddTaskActivity : AppCompatActivity() {
         b_add_new_task.setOnClickListener{
             val title=et_task_title.text.toString()
             val notes=et_task_notes.text.toString()
-            val date=activityVM.date
-            val time=activityVM.time
+            val date=activityVM.taskModel.date
+            val time=activityVM.taskModel.time
             val category=activityVM.getCategoryLiveData().value
 
             if (title.isNotEmpty() && notes.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && category!!.isNotEmpty()){
                 CoroutineScope(Dispatchers.IO).launch {
-                    vm.addTask(TaskModel(0, title, category, date, time, notes, false))
+                    vm.editTask(TaskModel(activityVM.taskModel.id, title, category, date, time, notes, activityVM.taskModel.isDone))
                     finish()
                 }
             }
@@ -170,7 +182,7 @@ class AddTaskActivity : AppCompatActivity() {
 
     private fun observable(){
         activityVM.getCategoryLiveData().observe(this){
-            item->pickCategory(item)
+                item->pickCategory(item)
         }
     }
 
